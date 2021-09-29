@@ -1,10 +1,5 @@
 @dynamicMemberLookup
 public struct Decoded<T> {
-    init(codingPath: CodingPath = [], result: DecodingResult<T>) {
-        self.codingPath = codingPath
-        self.result = result
-    }
-
     public let codingPath: CodingPath
     public let result: DecodingResult<T>
 }
