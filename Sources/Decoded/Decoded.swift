@@ -42,8 +42,32 @@ public extension KeyedDecodingContainer {
 }
 
 public extension Decoded {
+    func flatMap<U>(_ keyPath: KeyPath<T, Decoded<U>>) -> Decoded<U> {
+        switch result {
+        case .failure(let failure):
+            return .init(codingPath: codingPath, result: .failure(failure))
+        case .success(let success):
+            return success.value[keyPath: keyPath]
+        }
+    }
+
+    func map<U>(_ keyPath: KeyPath<T, U>) -> Decoded<U> {
+        switch result {
+        case .failure(let failure):
+            return .init(codingPath: codingPath, result: .failure(failure))
+        case .success(let success):
+            return .init(codingPath: codingPath, result: .success(.value(success.value[keyPath: keyPath])))
+        }
+    }
+}
+
+public extension Decoded {
     subscript<U>(dynamicMember keyPath: KeyPath<T, Decoded<U>>) -> Decoded<U> {
         flatMap(keyPath)
+    }
+
+    subscript<U>(dynamicMember keyPath: KeyPath<T, U>) -> Decoded<U> {
+        map(keyPath)
     }
 }
 
@@ -63,17 +87,6 @@ public extension Decoded {
     var unwrapped: T {
         get throws {
             try result.unwrapped
-        }
-    }
-}
-
-public extension Decoded {
-    func flatMap<U>(_ keyPath: KeyPath<T, Decoded<U>>) -> Decoded<U> {
-        switch result {
-        case .failure(let failure):
-            return .init(codingPath: codingPath, result: .failure(failure))
-        case .success(let success):
-            return success.value[keyPath: keyPath]
         }
     }
 }
