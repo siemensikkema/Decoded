@@ -83,10 +83,4 @@ public extension Decoded {
     var value: T? {
         result.value
     }
-
-    var unwrapped: T {
-        get throws {
-            try result.unwrapped
-        }
-    }
 }

@@ -44,17 +44,6 @@ public extension DecodingResult {
     var value: T? {
         success?.value
     }
-
-    var unwrapped: T {
-        get throws {
-            switch self {
-            case .success(let success):
-                return success.value
-            case .failure(let failure):
-                throw failure
-            }
-        }
-    }
 }
 
 extension DecodingResult: Decodable where T: Decodable {
@@ -69,15 +58,3 @@ extension DecodingResult: Decodable where T: Decodable {
 
 extension DecodingResult: Equatable where T: Equatable {}
 extension DecodingResult: Hashable where T: Hashable {}
-
-public extension Sequence {
-    func unwrapped<T>() throws -> [T] where Element == Decoded<T> {
-        try map { try $0.unwrapped }
-    }
-}
-
-public extension Dictionary {
-    func unwrapped<T>() throws -> [Key: T] where Value == Decoded<T> {
-        try mapValues { try $0.unwrapped }
-    }
-}
