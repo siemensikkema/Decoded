@@ -51,8 +51,15 @@ final class PropertyDecodingTests: XCTestCase {
             XCTFail("")
             return
         }
+
+        #if os(Linux)
+        XCTAssertEqual(failure.errorType, .typeMismatch)
+        XCTAssertEqual(failure.debugDescription, "Expected to decode String but found null instead.")
+        #else
         XCTAssertEqual(failure.errorType, .valueNotFound)
         XCTAssertEqual(failure.debugDescription, "Expected String but found null value instead.")
+        #endif
+
         XCTAssertThrowsError(try decodedName.unwrapped)
     }
 

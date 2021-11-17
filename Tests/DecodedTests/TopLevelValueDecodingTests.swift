@@ -24,8 +24,16 @@ final class TopLevelValueDecodingTests: XCTestCase {
             XCTFail("")
             return
         }
+
+        #if os(Linux)
+        XCTAssertEqual(failure.errorType, .typeMismatch)
+        XCTAssertEqual(failure.debugDescription, "Expected to decode Int but found null instead.")
+        #else
         XCTAssertEqual(failure.errorType, .valueNotFound)
         XCTAssertEqual(failure.debugDescription, "Expected Int but found null value instead.")
+        #endif
+
         XCTAssertThrowsError(try decoded.unwrapped)
     }
+
 }
