@@ -6,7 +6,7 @@ public struct Decoded<T> {
 
 extension Decoded: Decodable where T: Decodable {
     public init(from decoder: Decoder) throws {
-        codingPath = decoder.codingPath.map(AnyCodingKey.init)
+        codingPath = .init(decoder.codingPath)
         result = try .init(from: decoder)
     }
 }
@@ -19,7 +19,7 @@ public extension KeyedDecodingContainer {
         _ type: Decoded<T>.Type,
         forKey key: Key
     ) throws -> Decoded<T> {
-        let codingPath = (codingPath + [key]).map(AnyCodingKey.init)
+        let codingPath = codingPath + [key]
         let result: DecodingResult<T>
 
         do {
@@ -37,7 +37,7 @@ public extension KeyedDecodingContainer {
             }
         }
 
-        return .init(codingPath: codingPath, result: result)
+        return .init(codingPath: .init(codingPath), result: result)
     }
 }
 
