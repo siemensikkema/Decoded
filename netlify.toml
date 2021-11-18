@@ -1,5 +1,5 @@
 [build]
-publish = "Docs/Decoded.doccarchive/"
+publish = "docc.doccarchive/"
 
 [[redirects]]
 from = "/documentation/*"
