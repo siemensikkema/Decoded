@@ -35,4 +35,5 @@ final class TopLevelValueDecodingTests: XCTestCase {
 
         XCTAssertThrowsError(try decoded.unwrapped)
     }
+
 }
