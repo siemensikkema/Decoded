@@ -1,0 +1,23 @@
+name: Documentation
+
+on:
+  release:
+    types:
+      - published
+  workflow_dispatch:
+
+jobs:
+  build-docs:
+    runs-on: macos-11
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Build docs
+        run: xcodebuild docbuild -scheme "Decoded" -destination 'platform=macOS,arch=x86_64' -derivedDataPath DerivedData
+      - run: git switch docc
+      - run: mv DerivedData/Build/Products/Debug/*.doccarchive docc.doccarchive
+      - run: rm -rf DerivedData
+      - run: git add docc.doccarchive
+      - run: git commit -m "Update documentation"
+      - run: git push
+      - run: git switch main
