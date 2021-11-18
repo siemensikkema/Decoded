@@ -14,7 +14,8 @@ jobs:
         uses: actions/checkout@v2
       - name: Build docs
         run: xcodebuild docbuild -scheme "Decoded" -destination 'platform=macOS,arch=x86_64' -derivedDataPath DerivedData
-      - run: git switch docc
+      - run: git fetch docc
+      - run: git checkout FETCH_HEAD
       - run: mv DerivedData/Build/Products/Debug/*.doccarchive docc.doccarchive
       - run: rm -rf DerivedData
       - run: git add docc.doccarchive
