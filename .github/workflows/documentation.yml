@@ -16,6 +16,7 @@ jobs:
         run: xcodebuild docbuild -scheme "Decoded" -destination 'platform=macOS,arch=x86_64' -derivedDataPath DerivedData
       - run: git fetch origin docc
       - run: git checkout FETCH_HEAD
+      - run: git switch docc
       - run: mv -f DerivedData/Build/Products/Debug/*.doccarchive docc.doccarchive
       - run: rm -rf DerivedData
       - run: git add docc.doccarchive
