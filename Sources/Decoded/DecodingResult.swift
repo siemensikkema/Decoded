@@ -1,9 +1,13 @@
+/// The result of decoding a value.
 public enum DecodingResult<T> {
+    /// Indicates that decoding was successful.
     case success(DecodingSuccess<T>)
+    /// Indicates that decoding failed.
     case failure(DecodingFailure)
 }
 
 public extension DecodingResult {
+    /// The decoding success, or `nil`.
     var success: DecodingSuccess<T>? {
         guard case .success(let success) = self else {
             return nil
@@ -11,42 +15,24 @@ public extension DecodingResult {
         return success
     }
 
+    /// The decoding failure, or nil
     var failure: DecodingFailure? {
         guard case .failure(let failure) = self else {
             return nil
         }
         return failure
     }
-
-    var isAbsent: Bool {
-        guard success?.isAbsent == true else {
-            return false
-        }
-        return true
-    }
-
-    var isNil: Bool {
-        guard success?.isNil == true else {
-            return false
-        }
-        return true
-    }
-
-    var hasValue: Bool {
-        guard success?.hasValue == true else {
-            return false
-        }
-        return true
-    }
 }
 
 public extension DecodingResult {
+    /// The successful value of the `DecodingResult`, or `nil`.
     var value: T? {
         success?.value
     }
 }
 
 extension DecodingResult: Decodable where T: Decodable {
+    /// See `Decodable`.
     public init(from decoder: Decoder) throws {
         do {
             self = try .success(DecodingSuccess<T>(from: decoder))

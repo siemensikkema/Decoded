@@ -1,10 +1,14 @@
+/// The result of a decoding with its coding path.
 @dynamicMemberLookup
 public struct Decoded<T> {
+    /// The path of type-erased coding keys taken to get to this point in decoding.
     public let codingPath: CodingPath
+    /// The result of the decoding.
     public let result: DecodingResult<T>
 }
 
 extension Decoded: Decodable where T: Decodable {
+    /// See `Decodable`.
     public init(from decoder: Decoder) throws {
         codingPath = .init(decoder.codingPath)
         result = try .init(from: decoder)
@@ -15,6 +19,7 @@ extension Decoded: Hashable where T: Hashable {}
 extension Decoded: Equatable where T: Equatable {}
 
 public extension KeyedDecodingContainer {
+    /// Enables decoding of `Decoded` properties.
     func decode<T: Decodable>(
         _ type: Decoded<T>.Type,
         forKey key: Key
@@ -42,6 +47,8 @@ public extension KeyedDecodingContainer {
 }
 
 public extension Decoded {
+    /// Returns a new `Decoded`, either mapping from the successfully decoded value and unwrapping the result, or reiterating the failure.
+    /// - Returns: A new `Decoded` value of the nested type.
     func flatMap<U>(_ keyPath: KeyPath<T, Decoded<U>>) -> Decoded<U> {
         switch result {
         case .failure(let failure):
@@ -51,6 +58,8 @@ public extension Decoded {
         }
     }
 
+    /// Returns a new `Decoded`, either mapping from the successfully decoded value and repackaging the result, or reiterating the failure.
+    /// - Returns: A new `Decoded` value of the nested type.
     func map<U>(_ keyPath: KeyPath<T, U>) -> Decoded<U> {
         switch result {
         case .failure(let failure):
@@ -72,14 +81,7 @@ public extension Decoded {
 }
 
 public extension Decoded {
-    var failure: DecodingFailure? {
-        result.failure
-    }
-
-    var success: DecodingSuccess<T>? {
-        result.success
-    }
-
+    /// The successful value of the `DecodingResult`, or `nil`.
     var value: T? {
         result.value
     }
