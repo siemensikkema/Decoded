@@ -1,33 +1,16 @@
+/// Represents a successful decoding attempt.
 public enum DecodingSuccess<T> {
+    /// No value is present. Only possible if `T` is an `Optional` type.
     case absent
+    /// A `nil` value is present. Only possible if `T` is an `Optional` type.
     case `nil`
+    /// A value was decoded.
     case value(T)
 }
 
 public extension DecodingSuccess {
-    var isAbsent: Bool {
-        guard case .absent = self else {
-            return false
-        }
-        return true
-    }
-
-    var isNil: Bool {
-        guard case .nil = self else {
-            return false
-        }
-        return true
-    }
-
-    var hasValue: Bool {
-        guard case .value = self else {
-            return false
-        }
-        return true
-    }
-}
-
-public extension DecodingSuccess {
+    /// The decoded value.
+    /// In case of either `absent` or `nil` (and therefore an `T` == `Optional<...>`) the value is returned as `Optional<...>.none`.
     var value: T {
         switch self {
         case .absent, .nil:
@@ -43,6 +26,7 @@ public extension DecodingSuccess {
 }
 
 extension DecodingSuccess: Decodable where T: Decodable {
+    /// See `Decodable`.
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         if container.decodeNil(), T.self is ExpressibleByNilLiteral.Type {

@@ -1,10 +1,13 @@
+/// Provides throwing access to an unwrapped value.
 public protocol Unwrappable {
     associatedtype Unwrapped
 
+    /// The unwrapped value. Can throw if the value cannot be unwrapped.
     var unwrapped: Unwrapped { get throws }
 }
 
 extension DecodingResult: Unwrappable {
+    /// See `Unwrappable`.
     public var unwrapped: T {
         get throws {
             switch self {
@@ -18,6 +21,7 @@ extension DecodingResult: Unwrappable {
 }
 
 extension Decoded: Unwrappable {
+    /// See `Unwrappable`.
     public var unwrapped: T {
         get throws {
             try result.unwrapped
@@ -26,6 +30,7 @@ extension Decoded: Unwrappable {
 }
 
 extension Sequence where Element: Unwrappable {
+    /// See `Unwrappable`.
     public var unwrapped: [Element.Unwrapped] {
         get throws {
             try map { try $0.unwrapped }
@@ -34,6 +39,7 @@ extension Sequence where Element: Unwrappable {
 }
 
 extension Dictionary: Unwrappable where Value: Unwrappable {
+    /// See `Unwrappable`.
     public var unwrapped: [Key: Value.Unwrapped] {
         get throws {
             try mapValues { try $0.unwrapped }
