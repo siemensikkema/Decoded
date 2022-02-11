@@ -39,3 +39,16 @@ extension DecodingSuccess: Decodable where T: Decodable {
 
 extension DecodingSuccess: Equatable where T: Equatable {}
 extension DecodingSuccess: Hashable where T: Hashable {}
+
+extension DecodingSuccess: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        switch self {
+        case .absent:
+            return "absent"
+        case .nil:
+            return "nil"
+        case .value(let value):
+            return "value: \(value)"
+        }
+    }
+}
