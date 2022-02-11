@@ -1,6 +1,6 @@
 /// A wrapper around `DecodingError`.
 public struct DecodingFailure: Error {
-    /// The type of errors that can be captured.
+    /// The type of errors that can be captured. These match the cases of `DecodingError`.
     public enum DecodingErrorType: Equatable, Hashable {
         /// Corrupted or invalid data.
         case dataCorrupted
@@ -61,7 +61,7 @@ extension DecodingFailure: Hashable {
     }
 }
 
-extension DecodingFailure: CustomDebugStringConvertible {
+extension DecodingFailure {
     /// See `CustomDebugStringConvertible`.
     public var debugDescription: String {
         context.debugDescription

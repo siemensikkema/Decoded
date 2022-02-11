@@ -1,4 +1,53 @@
 /// The result of a decoding with its coding path.
+///
+/// This is the main point of interaction with this library. It is intended to be used in the context of decoding by wrapping around `Decodable` values in order to capture more information from the decoding process and collect any decoding errors along the way.
+///
+/// `Decoded` can be used on both decodable primitives and (the properties of) decodable structs or classes.
+///
+/// Using it with primitives can be done as follows:
+///
+/// ```swift
+/// let int = try JSONDecoder().decode(Decoded<Int>.self, from: "1".data(using: .utf8)!)
+/// print(int.value) // Optional(1)
+/// print(try int.unwrapped) // 1
+/// ```
+///
+/// If we were to pass it an incompatible value like a string, `value` would be `nil` and we could retrieve the decoding error as follows.
+///
+/// ```swift
+/// print(decoded.result.failure?.decodingError) // Optional(Decoded.DecodingFailure(decodingError: ...
+/// ```
+///
+/// Applying `Decoded` to a struct looks like this:
+///
+/// ```swift
+/// struct Box: Decodable {
+///     let contents: Decoded<String>
+/// }
+/// let box: try JSONDecoder().decode(Decoded<Box>.self, from #"{"contents": "🎁"}"#.data(using: .utf8)!)
+/// print(try box.contents.unwrapped) // 🎁
+/// print(box.contents.codingPath) // CodingPath(elements: [contents])
+/// ```
+///
+/// Note how we can directly access `contents` even though `box` is of type `Decoded<Box>`.
+///
+/// Another thing to highlight about `Decoded` is its ability to distinguish between a value being absent or explicitly set to `null`.
+///
+/// ```swift
+/// struct Optionals: Decodable {
+///     let a: Decoded<Int?>
+///     let b: Decoded<Int?>
+///     let c: Decoded<Int?>
+/// }
+///
+/// let optionals = try JSONDecoder().decode(Decoded<Optionals>.self, from: #"{"a": 1, "b": null}"#.data(using: .utf8)!)
+/// print(optionals.a.unwrapped)        // Optional(1)
+/// print(optionals.a.result.success)   // Optional(value: Optional(1))
+/// print(optionals.b.unwrapped)        // nil
+/// print(optionals.b.result.success)   // Optional(nil)
+/// print(optionals.c.unwrapped)        // nil
+/// print(optionals.c.result.success)   // Optional(absent)
+/// ```
 @dynamicMemberLookup
 public struct Decoded<T> {
     /// The path of type-erased coding keys taken to get to this point in decoding.
@@ -81,7 +130,7 @@ public extension Decoded {
 }
 
 public extension Decoded {
-    /// The successful value of the `DecodingResult`, or `nil`.
+    /// The successful value of the `DecodingResult` or `nil`.
     var value: T? {
         result.value
     }

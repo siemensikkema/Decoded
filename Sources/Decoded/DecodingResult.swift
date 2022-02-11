@@ -15,7 +15,7 @@ public extension DecodingResult {
         return success
     }
 
-    /// The decoding failure, or nil
+    /// The decoding failure, or `nil`.
     var failure: DecodingFailure? {
         guard case .failure(let failure) = self else {
             return nil
@@ -25,7 +25,7 @@ public extension DecodingResult {
 }
 
 public extension DecodingResult {
-    /// The successful value of the `DecodingResult`, or `nil`.
+    /// The successful value of the `DecodingResult` or `nil`.
     var value: T? {
         success?.value
     }
